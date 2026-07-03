@@ -1,0 +1,64 @@
+# ============================================================================
+# TEMPLATE - DISABLED BY DEFAULT (D2B, B-authored)
+# ============================================================================
+# This is the DRY-RUN benchmark template for target_reach_random_1_3m_v0.
+# The dry-run verifies TARGET GENERATION ONLY. It must not move the robot.
+#
+# Why it is a .template:
+#   scripts/run_benchmark.py only executes configs ending in .yaml. Keeping
+#   this file as .yaml.template means it cannot be run until it is deliberately
+#   copied to .yaml. B does not perform that copy; it is done at the D3 gate
+#   after A provides and reviews the dry-run experiment config below.
+#
+# What the dry-run is allowed to verify (see D2B doc §9):
+#   - target generation (r, theta sampling)
+#   - seed reproducibility (same seed -> same target)
+#   - r / theta distribution sanity
+#   - target_x / target_y computation
+#   - target_in_bounds check
+#   - artifact completeness
+#   - summary generation
+#
+# What the dry-run must NOT do:
+#   - publish /cmd_vel
+#   - call move_for
+#   - run scenario motion
+#   - call restore
+#   - change robot state
+#
+# Motion-gate safety:
+#   The referenced dry-run experiment MUST be entry_type: check (not scenario),
+#   and its task_name (target_reach_random_1_3m_dry_run_v0) does not contain any
+#   MOTION_TASK_KEYWORDS (base_probe / base_forward / move_for / scenario), so
+#   the benchmark runner's motion gate will NOT require --allow-motion. This is
+#   correct: the dry-run is not motion. If the experiment ever becomes a
+#   scenario or emits motion, the gate will refuse it and this template must be
+#   re-reviewed.
+#
+# Prerequisite before enabling:
+#   A must provide configs/experiments/target_reach_random_1_3m_dry_run_v0.yaml
+#   (B does NOT author motion or target-generation experiment configs). Until
+#   that file exists, copying this template to .yaml will make run_benchmark.py
+#   fail with FileNotFoundError on the referenced experiment, which is the safe
+#   failure mode.
+# ============================================================================
+schema_version: "0.2"
+benchmark_id: target_reach_random_1_3m_dry_run_20
+description: >-
+  [TEMPLATE / DISABLED] Dry-run benchmark for target_reach_random_1_3m_v0.
+  Verifies target generation, seed reproducibility, and artifact completeness
+  with NO robot motion. Requires A to provide the dry-run experiment config.
+  See docs/tasks/target_reach_random_1_3m_v0_B_benchmark_and_metrics.md §9.
+
+# The dry-run experiment config is provided by A at the D3 gate.
+# It does not exist yet; B does not create it.
+experiment_configs:
+  - configs/experiments/target_reach_random_1_3m_dry_run_v0.yaml
+
+runs_per_experiment: 20
+operator: B
+
+# Episodes are launched via the standard episode runner only. The benchmark
+# runner never calls PowerShell, Docker, restore, or /cmd_vel directly.
+launch:
+  command: "python scripts/run_episode.py --config {config} --operator {operator}"
