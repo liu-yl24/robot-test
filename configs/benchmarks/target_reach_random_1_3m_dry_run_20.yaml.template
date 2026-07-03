@@ -5,10 +5,14 @@
 # The dry-run verifies TARGET GENERATION ONLY. It must not move the robot.
 #
 # Why it is a .template:
-#   scripts/run_benchmark.py only executes configs ending in .yaml. Keeping
-#   this file as .yaml.template means it cannot be run until it is deliberately
-#   copied to .yaml. B does not perform that copy; it is done at the D3 gate
-#   after A provides and reviews the dry-run experiment config below.
+#   This file is not a normal enabled benchmark config and should not be used
+#   by standard benchmark workflows. Note that scripts/run_benchmark.py does
+#   not currently enforce a .yaml suffix; if this .template file is explicitly
+#   passed to --config, the runner will try to load it. At the current D2B
+#   stage, this still fails safely because the referenced dry-run experiment
+#   config does not exist yet. Enabling this benchmark requires a deliberate
+#   D3 gate: A must provide/review the dry-run experiment config, then the
+#   template may be copied to a .yaml file.
 #
 # What the dry-run is allowed to verify (see D2B doc §9):
 #   - target generation (r, theta sampling)

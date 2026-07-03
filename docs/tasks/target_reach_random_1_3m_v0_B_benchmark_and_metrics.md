@@ -441,8 +441,12 @@ no motion commands emitted
 ```
 
 The dry-run benchmark config template is provided as
-`configs/benchmarks/target_reach_random_1_3m_dry_run_20.yaml.template`
-(disabled by the `.template` suffix; see that file).
+`configs/benchmarks/target_reach_random_1_3m_dry_run_20.yaml.template`. Note
+`scripts/run_benchmark.py` does **not** enforce a `.yaml` suffix, so this file
+is not protected from explicit execution by code-level extension checks; it is
+not part of the normal enabled benchmark set, and at the D2B stage it still
+fails safely because the referenced dry-run experiment config is absent. See
+that file's header for the full safety note.
 
 ## 10. Fixed-distance Stage Metrics
 
